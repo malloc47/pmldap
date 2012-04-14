@@ -1,0 +1,34 @@
+#!/bin/sh
+set -e
+source ./config
+# SFILELIST=`cat $FILELIST | awk 'BEGIN { FS = "/" } ; { print $3 }'` 
+FILE_LIST=$(cd $SHARED_DIR ; find . -type f | grep -v \\.$ | cut -b 2-)
+
+if [ $# -gt 0 ]; then
+    MACHINE_LIST=$1
+else
+    MACHINE_LIST=$(cat $MACHINES)
+fi
+
+echo Syncing $MACHINE_LIST
+
+for m in $MACHINE_LIST ; do
+    echo -n $m 
+    for f in $FILE_LIST ; do
+	files=""
+	[ -f $MACHINE_DIR/$m$f.before ] && files="$files $MACHINE_DIR/$m$f.before"
+	[ -f $SHARED_DIR$f ] && files="$files $SHARED_DIR$f"	
+	[ -f $MACHINE_DIR/$m$f.after ] && files="$files $MACHINE_DIR/$m$f.after"
+	[ -f $MACHINE_DIR/$m$f ] && files="$MACHINE_DIR/$m$f"
+	mkdir -p `dirname $TMP_DIR/$m$f`
+	cat $files > $TMP_DIR/$m$f
+	[ -f $MACHINE_DIR/$m$f.mixin ] && sed -i '/\[mixin\]/{
+                                               s/\[mixin\]//g
+                                               r'"$MACHINE_DIR/$m$f.mixin"'
+                                               }' $TMP_DIR/$m$f
+	sed -i 's/\[mixin\]//g' $TMP_DIR/$m$f
+	# echo "scp -q $TMP_DIR/$m$f $m:$f"
+	echo -n " ."
+    done
+    echo ""
+done

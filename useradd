@@ -1,0 +1,40 @@
+#!/bin/sh
+set -e
+source config
+if [ $# -lt 2 ] ; then
+    echo "Please specify at least one user to add"
+    exit
+fi
+username=$1
+name=$2
+if [ $# -gt 2 ] ; then
+    groupnumber=$3
+else
+    groupnumber=$DEFAULT_GROUP
+fi
+
+usernumber=$(( $(awk -F: '{print $3}' $SHARED_DIR/etc/passwd | tail -n 1) + 1))
+
+# Add user
+echo "$username:x:$usernumber:$groupnumber:$name:$HOMEDIR/$username:/bin/bash" >> files/passwd
+
+# Add user to group
+sed -i "s/$/,$username/" $SHARED_DIR/etc/group
+
+# password=$(randpass 10)
+# password=$(date | md5sum | cut -c 1-16)
+password=$(cat /dev/urandom | tr -cd "[:alnum:]" | \
+    head -c ${1:-$PASSWORD_LENGTH})
+echo Password: $password
+passwd=$(ssh nyx openssl passwd -1 $password)
+
+chmod u+w $SHARED_DIR/etc/shadow
+# Add password for user
+echo "$username:$passwd:14596:0:99999:7:::" >> $SHARED_DIR/etc/shadow
+chmod u-w $SHARED_DIR/etc/shadow
+
+cat message | sed "s/\[full\]/$name/g ; s/\[user\]/$username/g ; s/\[password\]/$password/g" > email/$username
+
+mkdir $HOME_DIR/$username
+rsync -auv nyx:/etc/skel/ $HOME_DIR/$username/
+chown -R $usernumber:$groupnumber $HOME_DIR/$username/
