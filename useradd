@@ -37,8 +37,11 @@ chmod u+w $SHARED_DIR/etc/shadow
 echo "$username:$passwd:14596:0:99999:7:::" >> $SHARED_DIR/etc/shadow
 chmod u-w $SHARED_DIR/etc/shadow
 
-cat message | sed "s/\[full\]/$name/g ; s/\[user\]/$username/g ; s/\[password\]/$password/g" > email/$username
+if $EMAIL_GENERATE ; then
+    mkdir $EMAIL_DIR 2>/dev/null || true
+    cat message | sed "s/\[full\]/$name/g ; s/\[user\]/$username/g ; s/\[password\]/$password/g" > $EMAIL_DIR/$username
+fi
 
-mkdir $HOME_DIR/$username
-rsync -auv $SKEL_DIR/ $HOME_DIR/$username/
-chown -R $usernumber:$groupnumber $HOME_DIR/$username/
+echo mkdir $HOME_DIR/$username
+echo rsync -auv $SKEL_DIR/ $HOME_DIR/$username/
+echo chown -R $usernumber:$groupnumber $HOME_DIR/$username/

@@ -1,8 +1,14 @@
+# General
+DEFAULT_GROUP=1000
+PASSWORD_LENGTH=16
+EMAIL_GENERATE=false
+EMAIL_FILE=message
+# Machine
+MACHINES=machines
+# Dirs
 MACHINE_DIR=source
 TMP_DIR=transfer
 SHARED_DIR=shared
-MACHINES=machines
-DEFAULT_GROUP=1000
-HOME_DIR=/home
-PASSWORD_LENGTH=16
 SKEL_DIR=/etc/skel
+HOME_DIR=/home
+EMAIL_DIR=email
