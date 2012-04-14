@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
-source config
+source ./config
 if [ $# -lt 2 ] ; then
     echo "Please specify at least one user to add"
-    exit
+    exit 1
 fi
 username=$1
 name=$2
@@ -13,20 +13,24 @@ else
     groupnumber=$DEFAULT_GROUP
 fi
 
+if [ -n "$(awk -F: '{print $1}' $SHARED_DIR/etc/passwd | grep $username)" ]; then
+    echo "User already added"
+    exit 1
+fi
+
 usernumber=$(( $(awk -F: '{print $3}' $SHARED_DIR/etc/passwd | tail -n 1) + 1))
 
 # Add user
-echo "$username:x:$usernumber:$groupnumber:$name:$HOMEDIR/$username:/bin/bash" >> files/passwd
+echo "$username:x:$usernumber:$groupnumber:$name:$HOME_DIR/$username:/bin/bash" >> $SHARED_DIR/etc/passwd
 
 # Add user to group
 sed -i "s/$/,$username/" $SHARED_DIR/etc/group
 
 # password=$(randpass 10)
 # password=$(date | md5sum | cut -c 1-16)
-password=$(cat /dev/urandom | tr -cd "[:alnum:]" | \
-    head -c ${1:-$PASSWORD_LENGTH})
-echo Password: $password
-passwd=$(ssh nyx openssl passwd -1 $password)
+password=$(cat /dev/urandom | tr -cd "[:alnum:]" | head -c $PASSWORD_LENGTH)
+# echo Password: $password
+passwd=$(openssl passwd -1 $password)
 
 chmod u+w $SHARED_DIR/etc/shadow
 # Add password for user

@@ -27,7 +27,7 @@ for m in $MACHINE_LIST ; do
                                                r'"$MACHINE_DIR/$m$f.mixin"'
                                                }' $TMP_DIR/$m$f
 	sed -i 's/\[mixin\]//g' $TMP_DIR/$m$f
-	# echo "scp -q $TMP_DIR/$m$f $m:$f"
+	echo "scp -q $TMP_DIR/$m$f $m:$f"
 	echo -n " ."
     done
     echo ""
