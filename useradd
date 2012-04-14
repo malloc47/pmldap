@@ -40,5 +40,5 @@ chmod u-w $SHARED_DIR/etc/shadow
 cat message | sed "s/\[full\]/$name/g ; s/\[user\]/$username/g ; s/\[password\]/$password/g" > email/$username
 
 mkdir $HOME_DIR/$username
-rsync -auv nyx:/etc/skel/ $HOME_DIR/$username/
+rsync -auv $SKEL_DIR/ $HOME_DIR/$username/
 chown -R $usernumber:$groupnumber $HOME_DIR/$username/
