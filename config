@@ -6,9 +6,9 @@ EMAIL_FILE=message
 # Machine
 MACHINES=machines
 # Dirs
-MACHINE_DIR=source
+MACHINE_DIR=examples/source
 TMP_DIR=transfer
-SHARED_DIR=shared
+SHARED_DIR=examples/shared
 SKEL_DIR=/etc/skel
 HOME_DIR=/home
 EMAIL_DIR=email
