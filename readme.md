@@ -3,7 +3,10 @@ poor man's LDAP
 
 # Description
 
-Fed up of the overhead of "lightweight" directory services (read: [LDAP][1]) or configuration management services (e.g., [Puppet][2]), I finally cobbled together the part that everyone uses: distributing key documents among machines.
+Fed up of the overhead of "lightweight" directory services (read:
+[LDAP][1]) or configuration management services (e.g., [Puppet][2]), I
+finally cobbled together the part that everyone uses: distributing key
+documents among machines.
 
 LDAP (and, heaven help us, NIS) just isn't right for handling small
 Linux networks (5-20 machines) consisting mainly of homogeneous
@@ -61,6 +64,11 @@ management services is overkill.
 # Dependencies
 
 bash, openssl, ssh
+
+# Notes
+
+Test these scripts in a sandbox environment first.  I am not
+responsible for `pmldap` (or anything else) doing damage.
 
 ---
 
