@@ -1,0 +1,29 @@
+#!/bin/bash
+source config
+
+if [ $# -gt 0 ] ; then
+    echo Creating source for $1
+    mkdir -p $SHARED_DIR/$1 
+    for f in $FILELIST ; do
+	scp -q $1:$f $SHARED_DIR/$1/$f
+	echo -n ". "
+    done
+    echo
+    echo $1 source created
+else
+
+    read -n1 -p "Are you sure you want to recreate the complete source directory? (y/n) "
+    echo
+    [[ $REPLY = [yY] ]] && echo Creating source directory || { exit 1; }	
+    for m in $MACHINE_LIST ; do 
+	if [[ "$m" != "`hostname -s`" ]]; then
+	    mkdir -p $SOURCE_DIR/$m 
+	    for f in `cat $FILELIST` ; do
+		scp -q $m:$f $SHARED_DIR/$m/$f
+	    done
+	    echo -n ". "
+	fi
+    done
+    echo
+    echo source directory created
+fi
