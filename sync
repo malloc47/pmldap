@@ -5,7 +5,11 @@ source ./config
 FILE_LIST=$(cd $SHARED_DIR ; find . -type f | grep -v \\.$ | cut -b 2-)
 
 if [ $# -gt 0 ]; then
-    MACHINE_LIST=$1
+    if [ -f "$1" ] ; then
+	MACHINE_LIST=$(cat $1)
+    else
+	MACHINE_LIST=$@
+    fi
 else
     MACHINE_LIST=$(cat $MACHINES)
 fi
