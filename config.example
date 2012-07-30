@@ -12,3 +12,4 @@ SHARED_DIR=example/shared
 SKEL_DIR=/etc/skel
 HOME_DIR=/home
 EMAIL_DIR=email
+DRYRUN=true

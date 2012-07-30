@@ -31,7 +31,11 @@ for m in $MACHINE_LIST ; do
                                                r'"$MACHINE_DIR/$m$f.mixin"'
                                                }' $TMP_DIR/$m$f
 	sed -i 's/\[mixin\]//g' $TMP_DIR/$m$f
-	echo "scp -q $TMP_DIR/$m$f $m:$f"
+	if $DRYRUN ; then
+	    echo "scp -q $TMP_DIR/$m$f $m:$f"
+	else
+	    scp -q $TMP_DIR/$m$f $m:$f
+	fi
 	echo -n " ."
     done
     echo ""

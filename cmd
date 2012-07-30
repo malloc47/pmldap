@@ -9,6 +9,10 @@ fi
 for m in $MACHINE_LIST ; do
     if [[ "$m" != "`hostname -s`" ]]; then
 	echo $m:
-	echo ssh $m $@
+	if $DRYRUN ; then
+	    echo "ssh $m $@"
+	else
+	    ssh $m $@
+	fi
     fi
 done
