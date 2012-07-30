@@ -2,13 +2,13 @@
 DEFAULT_GROUP=1000
 PASSWORD_LENGTH=16
 EMAIL_GENERATE=false
-EMAIL_FILE=message
+EMAIL_FILE=example/message
 # Machine
-MACHINES=machines
+MACHINES=example/machines
 # Dirs
-MACHINE_DIR=examples/source
+MACHINE_DIR=example/source
 TMP_DIR=transfer
-SHARED_DIR=examples/shared
+SHARED_DIR=example/shared
 SKEL_DIR=/etc/skel
 HOME_DIR=/home
 EMAIL_DIR=email
