@@ -3,8 +3,8 @@ poor man's LDAP
 
 # Description
 
-Fed up of the overhead of "lightweight" directory services (read:
-[LDAP][1]) or configuration management services (e.g., [Puppet][2]), I
+Fed up of the overhead of "lightweight" directory services (read: [LDAP][1]) 
+or configuration management services (e.g., [Puppet][2]), I
 finally cobbled together the part that everyone uses: distributing key
 documents among machines.
 
@@ -24,8 +24,10 @@ management services is overkill.
 
 * Setup machines with ssh access and configure a server with ssh
   aliases (in `.ssh/config` or `/etc/hosts`) for each machine name
-  (thus far, `pmldap` doesn't handle this for you--feel free to pull
-  request this functionality).
+  (thus far, `pmldap` only partly handles this, with the
+  `authorize-machine` script--free to pull request more complete
+  functionality).  Update the `config` file with the files/paths
+  desired.
   
 * Place all machine names in the `machines` file, one on each line.
 
@@ -41,10 +43,12 @@ management services is overkill.
   merged with the files in the `shared` folder according to its
   extension: `.before` will be merged before, `after` will go after
   the shared contents, and the plain file will override the contents
-  of the shared files.
+  of the shared files.  You should manually update files depending on
+  whether you them merged before or after (not doing anything results
+  in no merge).
   
 * The `sync` script will handle the actual file merging in a
-  `transfer` directory and copy these files to the client machines.
+  `transfer` directory and `scp` these files to the client machines.
   Thanks to the merging, you can keep, say, a canonical list of users
   under the `shared` folder and these will be merged with the system
   users copied from the `setup` script.
@@ -56,10 +60,26 @@ management services is overkill.
   
 * `useradd` is a simplified `bash` reimplementation of the `passwd`
   command that operates on the `shared` folder instead of the system
-  folder.
+  folder.  It also generates the text of an email (derived from the
+  `message` file) that may contain instructions for new network users.
   
 * The `authorize-machine` script can be used to copy the appropriate
-  `authorized_keys` file to the client machines.
+  `authorized_keys` file to the client machines for bootstrapping.
+
+# Group Support
+
+If the first argument to `sync` or `cmd` is a file, then `pmldap` will
+use this file as the machine list, effectively synchronizing or
+running a command on the specified group of machines.  For example, in
+a heterogeneous environment in which you have Red Hat and Debian
+machines in the `machines` file, you may wish to create `debian` and
+`redhat` files, containing the list of machines that run Debian and
+Red Hat, respectively.  You may then use
+
+    ./cmd debian apt-get ...
+    ./cmd redhat yum ...
+
+to install packages on different groups of machines.
 
 # Dependencies
 
@@ -68,7 +88,8 @@ bash, openssl, ssh
 # Notes
 
 Test these scripts in a sandbox environment first.  I am not
-responsible for `pmldap` (or anything else) doing damage.
+responsible for `pmldap` (or anything else) doing damage.  There is a
+`DRYRUN` parameter in the
 
 ---
 
